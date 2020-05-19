@@ -1,0 +1,13 @@
+{% extends 'layout.html' %}
+{% block title %} success
+{% endblock %}
+
+{% block content %}
+<h3 class="dispaly-4">Success</h3>
+
+{{ message }}
+
+<div>
+    <a href="{{ url_for('flights') }}"><button class="btn btn-secondary">See all flights</button></a>
+</div>
+{% endblock %}

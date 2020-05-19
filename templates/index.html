@@ -1,0 +1,67 @@
+{% extends 'layout.html' %}
+
+{% block title %} Home
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <h3 class="dispaly-4"> Home page </h3>
+        <a href="{{ url_for('logout') }}"><button class="btn btn-default">Logout</button></a>
+    </div>
+</div>
+
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-12">
+            <form action="{{url_for('search_book') }}" method="post">
+                <div class="form-group">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <input class="form-control" type="text" name="search" placeholder="Enter Book ISBN here">
+                        </div>
+                        <div class="col-md-4">
+                            <a href=""><button class="btn btn-secondary">Search</button></a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+
+        <div class="col-md-6">
+            <h4>AList of all Books Available</h4>
+        </div>
+
+        <div class="col-md-4">
+            <form action="{{url_for('index')}}" method="get">
+                <div class="form-group">
+                    <select class="form-control" name="books_display" id="">
+                        <option value="1">50</option>
+                        <option value="2">100</option>
+                        <option value="3">500</option>
+                        <option value="4">1000</option>
+                        <option value="5">2500</option>
+                        <option value="6">All</option>
+                    </select>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-7">
+            {{ limit }}
+            <ul>
+                {% for book in books%}
+                <li>{{book.title}}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+    
+</div>
+
+{% endblock %}

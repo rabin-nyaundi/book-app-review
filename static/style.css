@@ -1,0 +1,23 @@
+@import url('https://fonts.googleapis.com/css2?family=Amaranth&family=Gotu&family=Manrope:wght@600&family=Palanquin:wght@500&display=swap');
+/* font-family: 'Amaranth', sans-serif;
+font-family: 'Gotu', sans-serif;
+font-family: 'Palanquin', sans-serif;
+font-family: 'Manrope', sans-serif; */
+
+body {
+    font-family: 'Gotu', sans-serif;
+    box-sizing: border-box;
+}
+#login-form{
+    padding: 20px;
+    margin: 30px;
+    border: 1px solid black;
+    border-radius: 4px;
+}
+#login-form form{
+    font-family: 'Amaranth', sans-serif;
+    color: green;
+}
+.form-group{
+    padding: 10px;
+}
