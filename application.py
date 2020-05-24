@@ -3,6 +3,7 @@ from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
 
 from flask import Flask, flash, session, render_template, request, url_for, redirect, g
+from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
