@@ -89,11 +89,11 @@
             <div class="row" id="user">
                 <p>User: @anonymus</p>
             </div>
-            <div class="row" id="text">
-                <p>Rating: {{review.review_text}}</p>
-            </div>
             <div class="row">
-                <!-- {{ user}} -->
+                <p>{{review.review_text}}</p>
+            </div>
+            <div class="row" id="text">
+                <p>Rating: {{review.avg_rating}}</p>
             </div>
             {% endfor %}
         </div>
