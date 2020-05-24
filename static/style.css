@@ -33,3 +33,18 @@ body {
     padding: 20px;
     font-size: 1.2em;
 }
+#review_bk{
+    padding: 30px;
+}
+
+#all_rev{
+    padding: 50px;
+    border: 1 ps solid grey;
+    border-radius: 2px;
+}
+#user{
+    background-color: azure;
+}
+#rating{
+    color: black;
+}
