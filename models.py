@@ -13,6 +13,7 @@ class Users(db.Model):
     username = db.Column(db.String(100), nullable=False, index=True)
     email = db.Column(db.String(100), nullable=False, index=True)
     password =  db.Column(db.String(100), nullable=False)
+    bk = db.relationship("Reviews", backref = "users", lazy = True)
     db.UniqueConstraint(email,username)
     
     def add_user(self, fname, lname, usern, email_ad, passw):
