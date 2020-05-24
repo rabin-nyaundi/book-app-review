@@ -1,3 +1,4 @@
+import requests
 from flask import Flask, render_template, jsonify, request,flash, session, url_for, redirect
 from models import *
 
