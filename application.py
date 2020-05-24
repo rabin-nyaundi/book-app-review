@@ -1,14 +1,11 @@
-import os, requests
+from flask import Flask, render_template, jsonify, request,flash, session, url_for, redirect, requests
 from models import *
+
 from werkzeug.security import generate_password_hash, check_password_hash
 
-from flask import flash, session, render_template, request, url_for, redirect, g
-# from flask_sqlalchemy import SQLAlchemy
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
-
-
 
 app = Flask(__name__)
 DATABASE_URL = 'postgres://aysddxnojxlpgr:8ddf0bdada2c7aa154806809e296b7020525362dd4a0bebd551e6b4fc24325c9@ec2-34-200-15-192.compute-1.amazonaws.com:5432/d6n9remruboocm'
