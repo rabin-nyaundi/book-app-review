@@ -43,6 +43,7 @@ body {
     border-radius: 2px;
 }
 #user{
+    padding: 10px;
     background-color: azure;
 }
 #rating{
