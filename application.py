@@ -88,8 +88,8 @@ def signup():
     
     
     Users.add_user(id,fname, lname, username, email, generate_password_hash(passwd, method='sha256'))
+    return render_template('login.html')
     flash('Registration successful')
-    return render_template('index.html')
 
  
     
