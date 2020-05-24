@@ -1,7 +1,6 @@
-import os
+import os, requests
 from models import *
 from werkzeug.security import generate_password_hash, check_password_hash
-
 
 from flask import Flask, flash, session, render_template, request, url_for, redirect, g
 from flask_session import Session
@@ -11,7 +10,7 @@ from sqlalchemy.orm import scoped_session, sessionmaker
 
 
 app = Flask(__name__)
-DATABASE_URL = 'postgres://owajnyzxapfjkj:11bc3ea7b5fcf8fe7f26231e5c614abfdb053e6c74b46d45e454747b694f799d@ec2-54-81-37-115.compute-1.amazonaws.com:5432/d2l50lkhkk3cn6'
+DATABASE_URL = 'postgres://aysddxnojxlpgr:8ddf0bdada2c7aa154806809e296b7020525362dd4a0bebd551e6b4fc24325c9@ec2-34-200-15-192.compute-1.amazonaws.com:5432/d6n9remruboocm'
 
 app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URL
 app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
@@ -32,19 +31,15 @@ engine = create_engine(DATABASE_URL)
 db = scoped_session(sessionmaker(bind=engine))
 
 
+
 @app.route("/", methods=['POST','GET'])
 def index():
-    # try:
-    limit = request.form.get('books_display')
-    
-    # except ValueError:
-    #     return "inavlid"
     
     if 'user_email' in session:
         user_email = session['user_email']
         
         books = db.execute("SELECT * FROM books LIMIT 10").fetchall()
-        return render_template('index.html',limit=limit, books=books)
+        return render_template('index.html', session = session['user_email'], books=books)
     
         
     
@@ -56,8 +51,8 @@ def index():
 @app.route("/login", methods=['POST','GET'])
 def login():
     session.pop("user_email", None)
+    
     if request.method == 'POST':
-        # return render_template('login.html')
     
         user_email = request.form.get('email')
         passwd = request.form.get('password')
@@ -71,9 +66,9 @@ def login():
             flash("Wrong password","success")
             return render_template('login.html')
     
-        session['user_email'] = user.id
-        flash("Logged in successfully",'success')
+        session['user_email'] = user.email
         return redirect(url_for('index'))
+        flash("Logged in successfully",'success')
     
     if 'user_email' in session:
             user_email = session['user_email']
@@ -102,22 +97,67 @@ def signup():
 @app.route("/logout", methods=['POST','GET'])  
 def logout():
     session.pop("user_email", None) 
-    return render_template('login.html')
-
+    
+    return redirect(url_for('index'))
 
 
 @app.route("/books", methods=['POST','GET'])
 def search_book():
     if request.method == "POST":
-        isbn = request.form.get('search')
-        book_title = request.form.get('search')
+        book = request.form.get('search')
         
-        book = db.execute("SELECT * FROM books WHERE isbn = :isbn",
-                        {"isbn":isbn}).fetchone()
-
-        
-        # book = db.execute("SELECT * FROM books WHERE title = :title",
-        #                 {"title":book_title}).fetchone()
-        
-        return render_template('books.html', book=book) 
+        book_result = db.execute("SELECT * FROM books WHERE title LIKE :book OR isbn LIKE :book OR author LIKE :book LIMIT 10", 
+                                 {"book": f"%{book}%"}).fetchall()
+                   
+        if not book_result:
+            flash("No such book found",'success')
+            
+        return render_template('index.html', session = session['user_email'], book_result= book_result) 
+    
     return redirect(url_for('index'))
+
+
+@app.route("/<string:isbn>", methods=['POST','GET'])
+def book(isbn):
+    mykey = 'rjn0HQqCvwdTx3JCEorA'
+    
+    book_info = db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                            {"isbn" :isbn}).fetchone() 
+    res = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": mykey, "isbns": isbn})
+    if res.status_code != 200:
+        raise Exception ("Error: API unscuccessful")
+    data = res.json()
+    result  =  data['books'][0]
+        
+    # return render_template('book.html',session = session['user_email'], book_info= book_info,result = result)
+            
+    if request.method =='GET':
+        if session.get('user_email') is None:
+            return redirect(url_for('index'))
+        
+        return render_template('book.html',session = session['user_email'], book_info= book_info,result = result)
+
+    if request.method == "POST":
+        user =  db.execute("SELECT *  FROM users WHERE email = :email",
+                              {"email":session['user_email']}).fetchone()
+        book =  db.execute("SELECT * FROM books WHERE isbn = :isbn",
+                           {"isbn":isbn}).fetchone()
+        book_id = book.id
+        user_id =  user.id
+    
+        if db.execute("SELECT * FROM reviews WHERE user_id = :user_id",
+                      {"user_id":user.id }).fetchone():
+            flash("You already submited a review","success")
+            return render_template('book.html',session = session['user_email'], book_info= book_info,result = result)
+            
+        else:
+            rating = request.form.get('rating')
+            message =  request.form.get('message')
+            
+            Reviews.add_review(id,user_id, book_id,message,rating)    
+           
+            rev =  db.execute("SELECT * FROM reviews WHERE book_id = :book_id",
+                              {"book_id": book.id}).fetchall()
+            return render_template('book.html',session = session['user_email'], book_info= book_info,result=result, rev=rev)
+
+            

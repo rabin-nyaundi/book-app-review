@@ -1,0 +1,94 @@
+{% extends 'layout.html' %}
+
+
+{% block title %} Search Books{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <img src="http://covers.openlibrary.org/b/isbn/{{book_info.isbn}}.jpg" class="img-fluid" alt="Responsive image" />
+        </div>
+        <div class="col-md-6">
+            <table class="table table-borderless">
+                <tbody>
+                
+                    <tr>
+                        <td>Book ISBN: </td>
+                        <td><b>{{book_info.isbn}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Book Title: </td>
+                        <td><b>{{book_info.title}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Book Author: </td>
+                        <td><b>{{book_info.author}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Year Published: </td>
+                        <td><b>{{book_info.pub_year}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Googlereads total reviews: </td>
+                        <td><b>{{result['work_reviews_count']}}</b></td>
+                    </tr>
+                    <tr>
+                        <td>Average ratings: </td>
+                        <td><b>{{ result['average_rating']}}</b></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            {% with errors = get_flashed_messages(category_filter=["success"]) %}
+                {% if errors %}
+                    {%- for message in errors %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            <span>{{ message }}</span>
+                            <button type="button" class="close" data-dismiss="alert"&times aria-label="Close">
+                                <span aria-hidden="true">&times;</span>
+                            </button>
+                        </div>
+                    {% endfor -%}
+                {% endif %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-md-4">
+            <form action="{{ url_for('book',isbn = book_info.isbn)}}" method="post">
+                <div class="form-group">
+                    <label for="rating"><h3>Rate Book</h3></label>
+                    <select name="rating" id="rating" required>
+                        <option value="0">Select</option>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                        <option value="5">5</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label for="message">Message</label>
+                    <textarea class="form-control" id="message" rows="3" placeholder="Leave you message" name="message" required></textarea>
+                </div>
+                <div class="row justify-content-center">
+                    <div class="col-md-5">
+                        <a href=""><button class="btn btn-primary ml-auto">Submit</button></a>
+                    </div>
+                </div>
+            </form>  
+        </div>
+        <div class="col-md-8">
+            {% for review in rev %}
+            <p>{{review.id}}</p>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+{% endblock %}

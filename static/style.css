@@ -21,3 +21,15 @@ body {
 .form-group{
     padding: 10px;
 }
+.navbar .navbar-brand{
+    letter-spacing: 10px !important;
+    font-weight: bolder;
+    color: darkslateblue;
+    font-size: large;
+}
+
+#books_div{
+    background-color: beige;
+    padding: 20px;
+    font-size: 1.2em;
+}
